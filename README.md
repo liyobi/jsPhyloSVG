@@ -1,9 +1,10 @@
 # add option #
-  support value option add
   
-  showSupportValue : false   //  show support values 
-	showSupportValueColor : "red"   //  show support values text color
-	showSupportValueSize : "10px"   //   show support values text size
+  showSupportValue : false   //  show support values
+  
+  showSupportValueColor : "red"   //  show support values text color
+  
+  showSupportValueSize : "10px"   //   show support values text size
   
 # jsPhyloSVG #
 
