@@ -1,3 +1,10 @@
+# add option #
+  support value option add
+  
+  showSupportValue : false   //  show support values 
+	showSupportValueColor : "red"   //  show support values text color
+	showSupportValueSize : "10px"   //   show support values text size
+  
 # jsPhyloSVG #
 
 jsPhyloSVG is an open-source javascript library specifically built for rendering highly-extensible, customizable phylogenetic trees.  jsPhyloSVG can render complex trees, yet offers a simple method to do so. It leverages the recent XML schema definition specified for phylogenetic trees, phyloXML.
