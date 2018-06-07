@@ -1088,7 +1088,11 @@ Smits.PhyloCanvas.NexmlParse.prototype = {
         // compensated by an increase in bufferX too
         alignRight  : false,
 
-        showScaleBar : false   // (STRING,  e.g. "0.05") Shows a scale bar at the bottom of the tree
+        showScaleBar : false,   // (STRING,  e.g. "0.05") Shows a scale bar at the bottom of the tree
+		
+		showSupportValue : false,   //  true/false    show support values
+		showSupportValueColor : "red",   //  (STRING,  e.g. "red") show support values text color
+		showSupportValueSize : "10px"   //  (STRING,  e.g. "10px") show support values text size
     },
 
     /* Circular Phylogram */
@@ -1352,6 +1356,22 @@ Smits.PhyloCanvas.Render.SVG.prototype = {
                     b = node.blue;
 
                     svg.draw(new Smits.PhyloCanvas.Render.Line(x1, x2, y1, y2, r, g, b));
+					if(sParams.showSupportValue){
+						/* x1 start position*/
+						var padX = x1 - (node.len+"").length * 7;
+						var attr = {};
+						attr.fill = sParams.showSupportValueColor;
+						attr["font-size"] = sParams.showSupportValueSize;
+						svg.draw(new Smits.PhyloCanvas.Render.Text(
+							padX, 
+							y1-10, 
+							node.len,
+							{
+								attr: attr
+							}
+							)
+						);
+					}
                 }
 
                 if(node.name){ // draw bootstrap values or names at end
@@ -1364,7 +1384,7 @@ Smits.PhyloCanvas.Render.SVG.prototype = {
                         attr.fill = "#000000";
                     }
 
-                    if(node.uri) { attr.href = node.uri };
+                    if(node.uri) { attr.href = "javascript:fnWinPop('"+node.uri+"')"};
                     if(node.description) {attr.title = node.description };
                     if(node.level == 0){
                         var innerY2 = absoluteY + (node.getMidbranchPosition(firstBranch) * scaleY);
@@ -1505,6 +1525,22 @@ Smits.PhyloCanvas.Render.SVG.prototype = {
                 labelsHold.push(node);
 
                 svg.draw(new Smits.PhyloCanvas.Render.Line(x1, x2, y1, y2, r, g, b));
+				if(sParams.showSupportValue){
+					/* x2 start poisition */
+					var padX = x2;
+					var attr = {};
+					attr.fill = sParams.showSupportValueColor;
+					attr["font-size"] = sParams.showSupportValueSize;
+					svg.draw(new Smits.PhyloCanvas.Render.Text(
+						padX, 
+						y1-10, 
+						node.len,
+						{
+							attr: attr
+						}
+						)
+					);
+				}
                 if(sParams.alignRight){
                     svg.draw(
                         new Smits.PhyloCanvas.Render.Path( // dotted line connecting branch to label
@@ -1527,7 +1563,7 @@ Smits.PhyloCanvas.Render.SVG.prototype = {
                     }
 
                     attr["text-anchor"] = 'start';
-                    if(node.uri) { attr.href = node.uri };
+                    if(node.uri) { attr.href = "javascript:fnWinPop('"+node.uri+"')"};
                     if(node.description) {attr.title = node.description };
 
                     var draw = svg.draw(
@@ -1579,14 +1615,19 @@ Smits.PhyloCanvas.Render.SVG.prototype = {
 
         },
 
-        drawScaleBar = function (){
+        drawScaleBar = function (node){
             y = absoluteY + scaleY;
-            x1 = 0;
-            x2 = sParams.showScaleBar * scaleX;
-            svg.draw(new Smits.PhyloCanvas.Render.Line(x1, x2, y, y));
-            svg.draw(new Smits.PhyloCanvas.Render.Text(
-                (x1+x2)/2,
-                y-8,
+			
+            x1 = sParams.paddingX;
+            x2 = x1 + ( sParams.showScaleBar * scaleX );
+			r = node.red;
+            g = node.green;
+            b = node.blue;
+            svg.draw(new Smits.PhyloCanvas.Render.Line(x1, x2, y, y, r, g, b));
+			
+			svg.draw(new Smits.PhyloCanvas.Render.Text(
+                x1,
+                y-10,
                 sParams.showScaleBar)
                     );
         },
@@ -1689,7 +1730,7 @@ Smits.PhyloCanvas.Render.SVG.prototype = {
 
         // Draw Scale Bar
         if(sParams.showScaleBar){
-            drawScaleBar();
+            drawScaleBar(node);
         }
 
         outerX = maxBranch + maxLabelLength + sParams.bufferInnerLabels;
@@ -1913,7 +1954,7 @@ Smits.PhyloCanvas.Render.Phylogram.prototype = {
                 }
 
                 attr["text-anchor"] = alignment;
-                if(node.uri) { attr.href = node.uri };
+                if(node.uri) { attr.href = "javascript:fnWinPop('"+node.uri+"')"};
                 if(node.description) {attr.title = node.description };
 
                 var draw = svg.draw(
